@@ -10,7 +10,7 @@ L = []
 
 for i, (img, target) in enumerate(cap):
     for s in target:
-        L.append("{}|{}".format(i,s))
+        L.append("{}|{}\n".format(i,s))
         print("{}|{}".format(i,s))
 
 with open("ann_export.txt","w",encoding='utf-8') as Fp:
