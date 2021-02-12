@@ -1,7 +1,7 @@
 import torchvision.datasets as dset
 import torchvision.transforms as transforms
-cap = dset.CocoCaptions(root = 'dir where images are',
-                        annFile = 'json annotation file',
+cap = dset.CocoCaptions(root = './coco/images',
+                        annFile = './coco/annotations/image_info_test2017.json',
                         transform=transforms.ToTensor())
 
 print('Number of samples: ', len(cap))
@@ -11,7 +11,7 @@ L = []
 for i, (img, target) in enumerate(cap):
     for s in target:
         L.append("{}|{}".format(i,s))
-        
+
 with open("ann_export.txt","w",encoding='utf-8') as Fp:
     Fp.writelines(L)
 
