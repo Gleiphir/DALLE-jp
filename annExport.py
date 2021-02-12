@@ -9,9 +9,9 @@ print('Number of samples: ', len(cap))
 L = []
 
 for i, (img, target) in enumerate(cap):
-    print("# {}".format(i))
     for s in target:
         L.append("{}|{}".format(i,s))
+        print("{}|{}".format(i,s))
 
 with open("ann_export.txt","w",encoding='utf-8') as Fp:
     Fp.writelines(L)
