@@ -11,6 +11,7 @@ L = []
 for i, (img, target) in enumerate(cap):
     for s in target:
         L.append("{}|{}".format(i,s))
+        print("# {}".format(i))
 
 with open("ann_export.txt","w",encoding='utf-8') as Fp:
     Fp.writelines(L)
