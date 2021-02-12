@@ -1,7 +1,7 @@
 import torchvision.datasets as dset
 import torchvision.transforms as transforms
 cap = dset.CocoCaptions(root = './coco/images',
-                        annFile = './coco/annotations/image_info_test2017.json',)
+                        annFile = './coco/annotations/image_info_test-dev2017.json',)
                         #transform=transforms.ToTensor())
 
 print('Number of samples: ', len(cap))
