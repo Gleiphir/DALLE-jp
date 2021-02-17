@@ -12,6 +12,8 @@ import random
 
 from torch.utils.data.dataset import Dataset
 
+
+
 dataset_path = r"merged.txt"
 
 class token_dataset:
@@ -20,7 +22,7 @@ class token_dataset:
         self.dataset_fp = filepath
 
         self.jp_vocab = self.build_vocab(filepath, self.ja_tokenizer)
-        print(len(self.jp_vocab))
+        print("Num of tokens:",len(self.jp_vocab))
         self.data = {}
         self.read_fp()
 
@@ -42,8 +44,7 @@ class token_dataset:
 
     def getRand(self, idx):
         raw = random.choice(self.data[idx])
-        return torch.tensor([self.jp_vocab[token] for token in self.ja_tokenizer(raw)],
-                                      dtype=torch.long)
+        return [self.jp_vocab[token] for token in self.ja_tokenizer(raw)]
 
     def getAll(self,idx):
         return [[self.jp_vocab[token] for token in self.ja_tokenizer(s)] for s in self.data[idx] ]
@@ -58,3 +59,6 @@ class token_dataset:
                     tokens = [token for token in self.ja_tokenizer(s)]
         print(tokens)
         return Max
+
+    def tokenizeList(self,raw:str):
+        return [self.jp_vocab[token] for token in self.ja_tokenizer(raw)]

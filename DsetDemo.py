@@ -10,7 +10,7 @@ IMAGE_SIZE = 256
 cap = dset.CocoCaptions(root = './coco/images',
                         annFile = './coco/annotations/captions_val2014.json',
                         transform=transforms.Compose([
-                            transforms.Resize(IMAGE_SIZE),
+                            transforms.Resize((IMAGE_SIZE,IMAGE_SIZE)),
                             transforms.ToTensor(),
                         ]))
 

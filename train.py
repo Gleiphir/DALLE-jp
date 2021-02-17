@@ -3,8 +3,37 @@ import torchvision.transforms as transforms
 from JPtokenize import token_dataset
 import torch
 from dalle_pytorch import DiscreteVAE, DALLE
+import numpy as np
+from torch.utils.data.dataloader import DataLoader
+import random
 
-IMAGE_SIZE = 256
+
+IMAGE_SIZE = 256 # 256*256
+
+NUM_TOKENS = 65536 # Larger than actually
+
+TEXTSEQLEN = 80
+
+BATCH_SIZE = 1
+
+TRAIN_BATCHES = 100
+
+#https://github.com/lucidrains/DALLE-pytorch/issues/33
+#Edit: And yup, you need to reserve 0 for padding and 1 for , so add 2 to your encoded text ids!
+
+
+
+
+def fixlen(orig:list):
+    fix = np.vectorize(lambda n: n + 2 if n != NUM_TOKENS else 0)
+    lens = [len(l) for l in orig]
+    data = np.full( (len(orig),TEXTSEQLEN),NUM_TOKENS )
+    Mask = np.arange(TEXTSEQLEN) < np.array(lens)[:, None]
+    data[Mask] = np.concatenate(orig)
+    return torch.Tensor(fix(data)),torch.Tensor(Mask)
+
+
+
 
 vae = DiscreteVAE(
     image_size = IMAGE_SIZE,
@@ -17,17 +46,39 @@ vae = DiscreteVAE(
     straight_through = False # straight-through for gumbel softmax. unclear if it is better one way or the other
 )
 
-images = torch.randn(4, 3, 256, 256)
 
-loss = vae(images, return_loss = True)
-loss.backward()
 
+
+
+"""
+text = torch.randint(0, NUM_TOKENS, (BATCH_SIZE, TEXTSEQLEN))
+images = torch.randn(BATCH_SIZE, 3, IMAGE_SIZE, IMAGE_SIZE)
+mask = torch.ones_like(text).bool()
+"""
+
+
+cap = dset.CocoCaptions(root = './coco/images',
+                        annFile = './coco/annotations/captions_val2014.json',
+                        transform=transforms.Compose([
+                            transforms.Resize((IMAGE_SIZE,IMAGE_SIZE)),
+                            transforms.ToTensor(),
+                        ]))
+
+
+
+tokenDset = token_dataset('./coco/merged.txt')
+
+
+for i, (img, target) in enumerate(cap):
+    #print(i,":",tokenDset.getRand(i),img.size())
+    loss = vae(img, return_loss = True)
+    loss.backward()
 
 dalle = DALLE(
     dim = 1024,
     vae = vae,                  # automatically infer (1) image sequence length and (2) number of image tokens
-    num_text_tokens = 10000,    # vocab size for text
-    text_seq_len = 256,         # text sequence length
+    num_text_tokens = NUM_TOKENS,    # vocab size for text
+    text_seq_len = TEXTSEQLEN,         # text sequence length
     depth = 12,                 # should aim to be 64
     heads = 16,                 # attention heads
     dim_head = 64,              # attention head dimension
@@ -35,14 +86,19 @@ dalle = DALLE(
     ff_dropout = 0.1            # feedforward dropout
 )
 
-text = torch.randint(0, 10000, (4, 256))
-images = torch.randn(4, 3, 256, 256)
-mask = torch.ones_like(text).bool()
-
-loss = dalle(text, images, mask = mask, return_loss = True)
-loss.backward()
+for i, (img, target) in enumerate(cap):
+    im = fixlen(tokenDset.getRand(i))
+    textToken, mask = fixlen( tokenDset.tokenizeList(random.choice(target)) )
+    loss = dalle(textToken, im, mask = mask, return_loss = True)
+    loss.backward()
 
 # do the above for a long time with a lot of data ... then
 
-images = dalle.generate_images(text, mask = mask)
-images.shape # (2, 3, 256, 256)
+test_text = "犬が地面に寝そべっている写真"
+
+textToken, mask = fixlen( tokenDset.tokenizeList(test_text) )
+
+images = dalle.generate_images(textToken, mask = mask)
+print(images.shape) # (2, 3, 256, 256)
+
+
