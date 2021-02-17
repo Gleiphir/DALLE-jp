@@ -43,7 +43,7 @@ vae = DiscreteVAE(
     num_resnet_blocks = 1,   # number of resnet blocks
     temperature = 0.9,       # gumbel softmax temperature, the lower this is, the harder the discretization
     straight_through = False # straight-through for gumbel softmax. unclear if it is better one way or the other
-)
+).cuda()
 
 
 
@@ -72,7 +72,7 @@ tokenDset = token_dataset('./coco/merged.txt')
 for i, (img, target) in enumerate(loader):
     #print(i,":",tokenDset.getRand(i),img.size())
     print("VAE epoch {} / {}".format(i,len(loader)))
-    loss = vae(img,return_recon_loss = True)
+    loss = vae(img.cuda(),return_recon_loss = True)
     loss.backward()
 
 torch.save(vae.state_dict(),"Vae.pth")
@@ -87,15 +87,14 @@ dalle = DALLE(
     dim_head = 64,              # attention head dimension
     attn_dropout = 0.1,         # attention dropout
     ff_dropout = 0.1            # feedforward dropout
-)
+).cuda()
 
 
 loader = DataLoader(cap)
 for i, (img, target) in enumerate(loader):
     print("DALLE epoch {} / {}".format(i, len(loader)))
-    im = fixlen(tokenDset.getRand(i))
     textToken, mask = fixlen( tokenDset.tokenizeList(random.choice(target)) )
-    loss = dalle(textToken, im, mask = mask, return_loss = True)
+    loss = dalle(textToken.cuda(), img.cuda(), mask = mask.cuda(), return_loss = True)
     loss.backward()
 
 # do the above for a long time with a lot of data ... then
