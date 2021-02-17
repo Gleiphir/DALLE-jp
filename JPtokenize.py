@@ -26,14 +26,12 @@ class token_dataset:
 
     def read_fp(self):
         with open(self.dataset_fp,encoding='utf-8') as Fp:
-            with tqdm(total=len(Fp.readlines())) as pbar:
-                for ln in Fp.readlines():
-                    idx_, text = ln.split('|')
-                    idx = int(idx_)
-                    if not idx in self.data:
-                        self.data[idx] = []
-                    self.data[idx].append(text)
-                    pbar.update(1)
+            for ln in Fp.readlines():
+                idx_, text = ln.split('|')
+                idx = int(idx_)
+                if not idx in self.data:
+                    self.data[idx] = []
+                self.data[idx].append(text)
 
     def build_vocab(self,filepath, tokenizer):
         counter = Counter()
