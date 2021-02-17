@@ -70,7 +70,7 @@ tokenDset = token_dataset('./coco/merged.txt')
 
 for i, (img, target) in enumerate(loader):
     #print(i,":",tokenDset.getRand(i),img.size())
-    loss = vae(img)
+    loss = vae(img,return_recon_loss = True)
     loss.backward()
 
 dalle = DALLE(
