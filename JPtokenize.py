@@ -6,6 +6,8 @@ from torchtext.vocab import Vocab
 from torchtext.utils import download_from_url, extract_archive
 import io
 
+from tqdm import tqdm
+
 import random
 
 from torch.utils.data.dataset import Dataset
@@ -24,7 +26,7 @@ class token_dataset:
 
     def read_fp(self):
         with open(self.dataset_fp,encoding='utf-8') as Fp:
-            for ln in Fp.readlines():
+            for ln in tqdm(total=Fp.readlines()):
                 idx_, text = ln.split('|')
                 idx = int(idx_)
                 if not idx in self.data:
