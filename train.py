@@ -34,7 +34,6 @@ def fixlen(orig:list):
 
 
 
-
 vae = DiscreteVAE(
     image_size = IMAGE_SIZE,
     num_layers = 3,          # number of downsamples - ex. 256 / (2 ** 3) = (32 x 32 feature map)
@@ -71,7 +70,7 @@ tokenDset = token_dataset('./coco/merged.txt')
 
 for i, (img, target) in enumerate(cap):
     #print(i,":",tokenDset.getRand(i),img.size())
-    loss = vae(img, return_loss = True)
+    loss = vae(img)
     loss.backward()
 
 dalle = DALLE(
