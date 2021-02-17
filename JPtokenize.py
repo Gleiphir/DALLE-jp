@@ -20,7 +20,7 @@ class token_dataset:
         self.dataset_fp = filepath
 
         self.jp_vocab = self.build_vocab(filepath, self.ja_tokenizer)
-
+        print(len(self.jp_vocab))
         self.data = {}
         self.read_fp()
 
@@ -38,7 +38,7 @@ class token_dataset:
         with io.open(filepath, encoding="utf8") as f:
           for string_ in f:
             counter.update(tokenizer(string_))
-        return Vocab(counter, specials=['<unk>', '<pad>', '<bos>', '<eos>'])
+        return Vocab(counter, specials=['<unk>', '<pad>', '<bos>', '<eos>']).
 
     def getRand(self, idx):
         raw = random.choice(self.data[idx])
