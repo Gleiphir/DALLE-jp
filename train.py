@@ -68,11 +68,14 @@ loader = DataLoader(cap)
 tokenDset = token_dataset('./coco/merged.txt')
 
 
+
 for i, (img, target) in enumerate(loader):
     #print(i,":",tokenDset.getRand(i),img.size())
     print("VAE epoch {} / {}".format(i,len(loader)))
     loss = vae(img,return_recon_loss = True)
     loss.backward()
+
+torch.save(vae.state_dict(),"Vae.pth")
 
 dalle = DALLE(
     dim = 1024,
@@ -96,6 +99,8 @@ for i, (img, target) in enumerate(loader):
     loss.backward()
 
 # do the above for a long time with a lot of data ... then
+
+torch.save(dalle.state_dict(),"dalle.pth")
 
 test_text = "犬が地面に寝そべっている写真"
 
