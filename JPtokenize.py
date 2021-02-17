@@ -26,7 +26,7 @@ class token_dataset:
 
     def read_fp(self):
         with open(self.dataset_fp,encoding='utf-8') as Fp:
-            for ln in tqdm(total=Fp.readlines()):
+            for ln in tqdm(Fp.readlines()):
                 idx_, text = ln.split('|')
                 idx = int(idx_)
                 if not idx in self.data:
