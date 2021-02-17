@@ -1,16 +1,22 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+import torchvision.datasets as dset
+import torchvision.transforms as transforms
+from JPtokenize import token_dataset
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+cap = dset.CocoCaptions(root = './coco/images',
+                        annFile = './coco/annotations/captions_val2014.json',)
+                        #transform=transforms.ToTensor())
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+tokenDset = token_dataset('./coco/merged.txt')
+
+
+print('Number of samples: ', len(cap))
+#img, target = cap[3] # load 4th sample
+L = []
+
+print('Max len',tokenDset.maxLen())
+
+for i, (img, target) in enumerate(cap):
+    print(i,":",tokenDset.getRand(i),img.size())
+    if i > 10:
+        break
