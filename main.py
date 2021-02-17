@@ -17,6 +17,6 @@ L = []
 print('Max len',tokenDset.maxLen())
 
 for i, (img, target) in enumerate(cap):
-    print(i,":",tokenDset.getRand(i),img.size())
+    print(i,":",tokenDset.getRand(i),img.size)
     if i > 10:
         break
