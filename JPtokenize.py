@@ -14,7 +14,7 @@ dataset_path = r"merged.txt"
 
 class token_dataset:
     def __init__(self,filepath):
-        self.ja_tokenizer = get_tokenizer('spacy', language='ja')
+        self.ja_tokenizer = get_tokenizer('spacy', language='ja_core_news_sm')
         self.dataset_fp = filepath
 
         self.jp_vocab = self.build_vocab(filepath, self.ja_tokenizer)
