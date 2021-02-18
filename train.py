@@ -88,7 +88,10 @@ loader = DataLoader(cap)
 for i, (img, target) in enumerate(loader):
     if i % 10 == 0:
         print("DALLE epoch {} / {}".format(i, len(loader)))
-    textToken, mask = fixlen( [ tokenDset.getRand(i)  ])
+    try:
+        textToken, mask = fixlen( [ tokenDset.getRand(i)  ])
+    except IndexError:
+        continue
     loss = dalle(textToken.cuda(), img.cuda(), mask = mask.cuda(), return_loss = True)
     loss.backward()
 
