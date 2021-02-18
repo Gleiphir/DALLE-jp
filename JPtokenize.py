@@ -5,12 +5,25 @@ from collections import Counter
 from torchtext.vocab import Vocab
 from torchtext.utils import download_from_url, extract_archive
 import io
-
+import numpy as np
 from tqdm import tqdm
 
 import random
 
 from torch.utils.data.dataset import Dataset
+
+
+TEXTSEQLEN = 80
+NUM_TOKENS = 65536
+
+
+def fixlen(orig:list):
+    fix = np.vectorize(lambda n: n + 2 if n != NUM_TOKENS else 0)
+    lens = [len(l) for l in orig]
+    data = np.full( (len(orig),TEXTSEQLEN),NUM_TOKENS )
+    Mask = np.arange(TEXTSEQLEN) < np.array(lens)[:, None]
+    data[Mask] = np.concatenate(orig)
+    return torch.Tensor(fix(data)),torch.Tensor(Mask)
 
 
 
@@ -62,3 +75,12 @@ class token_dataset:
 
     def tokenizeList(self,raw:str):
         return [self.jp_vocab[token] for token in self.ja_tokenizer(raw)]
+
+
+if __name__ =='__main__':
+    tokenDset = token_dataset('./merged-smallsample.txt')
+    test_text = ["犬が地面に寝そべっている写真","犬が地面に寝そべっている写真1"]
+    print(tokenDset.tokenizeList(test_text[0]))
+    textToken, mask = fixlen( [ tokenDset.tokenizeList(test_text[0]) ] )
+    print(textToken)
+    print(mask)

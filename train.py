@@ -1,6 +1,6 @@
 import torchvision.datasets as dset
 import torchvision.transforms as transforms
-from JPtokenize import token_dataset
+from JPtokenize import token_dataset,fixlen
 import torch
 from dalle_pytorch import DiscreteVAE, DALLE
 import numpy as np
@@ -23,14 +23,6 @@ TRAIN_BATCHES = 100
 
 
 
-
-def fixlen(orig:list):
-    fix = np.vectorize(lambda n: n + 2 if n != NUM_TOKENS else 0)
-    lens = [len(l) for l in orig]
-    data = np.full( (len(orig),TEXTSEQLEN),NUM_TOKENS )
-    Mask = np.arange(TEXTSEQLEN) < np.array(lens)[:, None]
-    data[Mask] = np.concatenate(orig)
-    return torch.Tensor(fix(data)),torch.Tensor(Mask)
 
 
 
@@ -65,7 +57,7 @@ cap = dset.CocoCaptions(root = './coco/images',
 
 loader = DataLoader(cap)
 
-tokenDset = token_dataset('./coco/merged.txt')
+tokenDset = token_dataset('./coco/merged-smallsample.txt')
 
 
 
@@ -93,7 +85,7 @@ dalle = DALLE(
 loader = DataLoader(cap)
 for i, (img, target) in enumerate(loader):
     print("DALLE epoch {} / {}".format(i, len(loader)))
-    textToken, mask = fixlen( tokenDset.tokenizeList(random.choice(target)) )
+    textToken, mask = fixlen( [ tokenDset.tokenizeList(random.choice(target)) ])
     loss = dalle(textToken.cuda(), img.cuda(), mask = mask.cuda(), return_loss = True)
     loss.backward()
 
@@ -103,7 +95,7 @@ torch.save(dalle.state_dict(),"dalle.pth")
 
 test_text = "犬が地面に寝そべっている写真"
 
-textToken, mask = fixlen( tokenDset.tokenizeList(test_text) )
+textToken, mask = fixlen( [tokenDset.tokenizeList(test_text) ])
 
 images = dalle.generate_images(textToken, mask = mask)
 print(images.shape) # (2, 3, 256, 256)
