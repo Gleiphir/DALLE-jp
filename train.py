@@ -63,7 +63,8 @@ tokenDset = token_dataset('./coco/merged.txt')
 
 for i, (img, target) in enumerate(loader):
     #print(i,":",tokenDset.getRand(i),img.size())
-    print("VAE epoch {} / {}".format(i,len(loader)))
+    if i %100 == 0:
+        print("VAE epoch {} / {}".format(i,len(loader)))
     loss = vae(img.cuda(),return_recon_loss = True)
     loss.backward()
 
@@ -85,8 +86,8 @@ dalle = DALLE(
 
 loader = DataLoader(cap)
 for i, (img, target) in enumerate(loader):
-    print("DALLE epoch {} / {}".format(i, len(loader)))
-
+    if i % 10 == 0:
+        print("DALLE epoch {} / {}".format(i, len(loader)))
     textToken, mask = fixlen( [ tokenDset.getRand(i)  ])
     loss = dalle(textToken.cuda(), img.cuda(), mask = mask.cuda(), return_loss = True)
     loss.backward()
