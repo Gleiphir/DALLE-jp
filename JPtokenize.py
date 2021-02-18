@@ -23,7 +23,7 @@ def fixlen(orig:list):
     data = np.full( (len(orig),TEXTSEQLEN),NUM_TOKENS )
     Mask = np.arange(TEXTSEQLEN) < np.array(lens)[:, None]
     data[Mask] = np.concatenate(orig)
-    return torch.LongTensor(fix(data)),torch.LongTensor(Mask)
+    return torch.LongTensor(fix(data)),torch.BoolTensor(Mask)
 
 
 
