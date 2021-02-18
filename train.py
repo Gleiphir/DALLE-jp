@@ -88,6 +88,8 @@ for i, (img, target) in enumerate(loader):
     textToken, mask = fixlen( [ tokenDset.tokenizeList(random.choice(target)) ])
     loss = dalle(textToken.cuda(), img.cuda(), mask = mask.cuda(), return_loss = True)
     loss.backward()
+    if i >100:
+        break
 
 # do the above for a long time with a lot of data ... then
 
