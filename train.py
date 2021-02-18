@@ -87,6 +87,7 @@ dalle = DALLE(
 loader = DataLoader(cap)
 for i, (img, target) in enumerate(loader):
     print("DALLE epoch {} / {}".format(i, len(loader)))
+    print(random.choice(target))
     textToken, mask = fixlen( [ tokenDset.tokenizeList(random.choice(target)) ])
     loss = dalle(textToken.cuda(), img.cuda(), mask = mask.cuda(), return_loss = True)
     loss.backward()
