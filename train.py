@@ -90,7 +90,7 @@ for i, (img, target) in enumerate(loader):
         print("DALLE epoch {} / {}".format(i, len(loader)))
     try:
         textToken, mask = fixlen( [ tokenDset.getRand(i)  ])
-    except IndexError:
+    except KeyError:
         continue
     loss = dalle(textToken.cuda(), img.cuda(), mask = mask.cuda(), return_loss = True)
     loss.backward()
