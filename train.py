@@ -66,8 +66,6 @@ for i, (img, target) in enumerate(loader):
     print("VAE epoch {} / {}".format(i,len(loader)))
     loss = vae(img.cuda(),return_recon_loss = True)
     loss.backward()
-    if i >100:
-        break
 
 torch.save(vae.state_dict(),"Vae.pth")
 
@@ -87,12 +85,10 @@ dalle = DALLE(
 loader = DataLoader(cap)
 for i, (img, target) in enumerate(loader):
     print("DALLE epoch {} / {}".format(i, len(loader)))
-    print(random.choice(target))
-    textToken, mask = fixlen( [ tokenDset.tokenizeList(random.choice(target)) ])
+
+    textToken, mask = fixlen( [ tokenDset.tokenizeList(token_dataset.getRand(i)) ])
     loss = dalle(textToken.cuda(), img.cuda(), mask = mask.cuda(), return_loss = True)
     loss.backward()
-    if i >100:
-        break
 
 # do the above for a long time with a lot of data ... then
 
