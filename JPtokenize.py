@@ -38,7 +38,8 @@ class token_dataset:
         print("Num of tokens:",len(self.jp_vocab))
         self.data = {}
         self.read_fp()
-        print(len(self.data.keys()),"Keys:","|".join(self.data.keys()))
+        print(len(self.data.keys()))
+        print("Keys:","|".join(self.data.keys()))
 
     def read_fp(self):
         with open(self.dataset_fp,encoding='utf-8') as Fp:
