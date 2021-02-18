@@ -57,7 +57,7 @@ cap = dset.CocoCaptions(root = './coco/images',
 
 loader = DataLoader(cap)
 
-tokenDset = token_dataset('./coco/merged-smallsample.txt')
+tokenDset = token_dataset('./coco/merged.txt')
 
 
 
