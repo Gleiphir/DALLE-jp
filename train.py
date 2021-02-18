@@ -66,6 +66,8 @@ for i, (img, target) in enumerate(loader):
     print("VAE epoch {} / {}".format(i,len(loader)))
     loss = vae(img.cuda(),return_recon_loss = True)
     loss.backward()
+    if i >100:
+        break
 
 torch.save(vae.state_dict(),"Vae.pth")
 
