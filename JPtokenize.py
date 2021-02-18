@@ -39,7 +39,7 @@ class token_dataset:
         self.data = {}
         self.read_fp()
         print(len(self.data.keys()))
-        print("Keys:","|".join(self.data.keys()))
+        print("Keys:","|".join(str(self.data.keys())))
 
     def read_fp(self):
         with open(self.dataset_fp,encoding='utf-8') as Fp:
