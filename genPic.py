@@ -6,7 +6,7 @@ from dalle_pytorch import DiscreteVAE, DALLE
 import numpy as np
 from torch.utils.data.dataloader import DataLoader
 import random
-
+from torchvision.utils import save_image
 
 IMAGE_SIZE = 256 # 256*256
 
@@ -76,6 +76,7 @@ for i in range(30):
     mask = mask.cuda()
     images = dalle.generate_images(textToken, mask = mask)
     print(images.size())
+    save_image( torch.squeeze(images) ,"./imgs/{}.png".format(i) )
 
 
 
