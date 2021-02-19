@@ -76,7 +76,7 @@ for i in range(30):
     mask = mask.cuda()
     images = dalle.generate_images(textToken, mask = mask)
     print(images.size())
-    save_image( torch.squeeze(images) ,"./imgs/{}.png".format(i) )
+    save_image( images ,"./imgs/{}.png".format(i) )
 
 
 
