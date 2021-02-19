@@ -75,6 +75,7 @@ for i in range(30):
     textToken = textToken.cuda()
     mask = mask.cuda()
     images = dalle.generate_images(textToken, mask = mask)
+    print(images.size())
 
 
 
