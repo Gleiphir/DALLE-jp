@@ -22,7 +22,7 @@ TRAIN_BATCHES = 100
 #Edit: And yup, you need to reserve 0 for padding and 1 for , so add 2 to your encoded text ids!
 
 
-EPOCHS = 50
+EPOCHS = 3
 
 
 
@@ -67,7 +67,7 @@ for epoch in range(EPOCHS):
         img,_ = cap[i]
         img=img.unsqueeze(0).cuda()
         #print(img.size())
-        if i %100 == 0:
+        if i %10 == 0:
             print("VAE epoch {} / {}".format(i,EPOCHS * 100))
         loss = vae(img,return_recon_loss = True)
         loss.backward()
