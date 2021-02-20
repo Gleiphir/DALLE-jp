@@ -34,7 +34,7 @@ vae = DiscreteVAE(
     hidden_dim = 64,         # hidden dimension
     num_resnet_blocks = 1,   # number of resnet blocks
     temperature = 0.9,       # gumbel softmax temperature, the lower this is, the harder the discretization
-    straight_through = False # straight-through for gumbel softmax. unclear if it is better one way or the other
+    straight_through = False, # straight-through for gumbel softmax. unclear if it is better one way or the other
 ).cuda()
 
 vae.load_state_dict(torch.load("Vae.pth"))
@@ -70,7 +70,7 @@ num_pics = 30
 def denorm(img:torch.Tensor):
     mean = torch.mean(img)
     min_maxrange =( torch.max(img) - torch.min(img) )
-    return ( (img - mean) / (min_maxrange  )  + 0.5 )* 255
+    return ( (img - mean) / (min_maxrange )  + 0.5 )* 255
 
 for i in range(30):
 
@@ -82,7 +82,7 @@ for i in range(30):
     images = dalle.generate_images(textToken, mask = mask)
     Dimg  = denorm(images)
     print(images.size(),torch.min(Dimg),torch.max(Dimg),torch.mean(Dimg))
-    save_image( Dimg ,"./imgs/{}.png".format(i),normalize=True)
+    save_image( Dimg ,"./imgs/{}.png".format(i))
 
 
 
