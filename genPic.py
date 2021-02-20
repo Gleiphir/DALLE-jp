@@ -67,7 +67,10 @@ tokenDset = token_dataset('./coco/merged.txt')
 
 num_pics = 30
 
-
+def denorm(img:torch.Tensor):
+    mean = torch.mean(img)
+    min_maxrange = torch.max(img) - torch.min(img)
+    return (img - mean) / (min_maxrange / 2.0) + 0.5
 
 for i in range(30):
 
@@ -78,7 +81,7 @@ for i in range(30):
     mask = mask.cuda()
     images = dalle.generate_images(textToken, mask = mask)
     print(images.size(),torch.min(images),torch.max(images),torch.mean(images))
-    save_image( images ,"./imgs/{}.png".format(i) ,normalize=True,range=(-0.5,0.5))
+    save_image( denorm(images) ,"./imgs/{}.png".format(i),normalize=True)
 
 
 
