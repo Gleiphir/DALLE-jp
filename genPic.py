@@ -7,6 +7,8 @@ import numpy as np
 from torch.utils.data.dataloader import DataLoader
 import random
 from torchvision.utils import save_image
+from PIL import Image
+
 
 IMAGE_SIZE = 256 # 256*256
 
@@ -70,7 +72,7 @@ num_pics = 30
 def denorm(img:torch.Tensor):
     mean = torch.mean(img)
     min_maxrange =( torch.max(img) - torch.min(img) )
-    return torch.LongTensor( ( (img - mean) / (min_maxrange )  + 0.5 )* 255)
+    return  (( (img - mean) / (min_maxrange )  + 0.5 )* 255)
 
 for i in range(30):
 
@@ -80,9 +82,10 @@ for i in range(30):
     textToken = textToken.cuda()
     mask = mask.cuda()
     images = dalle.generate_images(textToken, mask = mask)
-    Dimg  = denorm(images)
-    print(images.size(),torch.min(Dimg),torch.max(Dimg),torch.mean(Dimg))
-    save_image( Dimg ,"./imgs/{}.png".format(i))
+    Dimg  = transforms.ToPILImage()(images)
+    #print(images.size(),torch.min(Dimg),torch.max(Dimg),torch.mean(Dimg))
+    #save_image( Dimg ,"./imgs/{}.png".format(i))
+    Dimg.save("./imgs/{}.png".format(i))
 
 
 
