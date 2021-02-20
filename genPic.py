@@ -67,6 +67,8 @@ tokenDset = token_dataset('./coco/merged.txt')
 
 num_pics = 30
 
+
+
 for i in range(30):
 
     test_text = "犬が地面に寝そべっている写真"
@@ -75,8 +77,8 @@ for i in range(30):
     textToken = textToken.cuda()
     mask = mask.cuda()
     images = dalle.generate_images(textToken, mask = mask)
-    print(images.size(),torch.min(images),torch.max(images))
-    save_image( images ,"./imgs/{}.png".format(i) )
+    print(images.size(),torch.min(images),torch.max(images),torch.mean(images))
+    save_image( images ,"./imgs/{}.png".format(i) ,normalize=True,range=(-0.5,0.5))
 
 
 
