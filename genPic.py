@@ -69,8 +69,8 @@ num_pics = 30
 
 def denorm(img:torch.Tensor):
     mean = torch.mean(img)
-    min_maxrange = torch.max(img) - torch.min(img)
-    return ( (img - mean) / (min_maxrange / 2.0) + 0.5 )* 255
+    min_maxrange =( torch.max(img) - torch.min(img) )
+    return  (img - mean) / (min_maxrange  )* 255
 
 for i in range(30):
 
