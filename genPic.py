@@ -82,7 +82,7 @@ for i in range(30):
     textToken = textToken.cuda()
     mask = mask.cuda()
     images = dalle.generate_images(textToken, mask = mask)
-    Dimg  = transforms.ToPILImage()(images)
+    Dimg  = transforms.ToPILImage()(images[0])
     #print(images.size(),torch.min(Dimg),torch.max(Dimg),torch.mean(Dimg))
     #save_image( Dimg ,"./imgs/{}.png".format(i))
     Dimg.save("./imgs/{}.png".format(i))
