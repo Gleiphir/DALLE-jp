@@ -70,7 +70,7 @@ for epoch in range(EPOCHS):
         if i %10 == 0:
             print("VAE epoch {} / {}".format(i+ epoch*100,EPOCHS * 100))
         loss = vae(img,return_recon_loss = True)
-        VAEloss.append( loss.cpu().numpy()  )
+        VAEloss.append( loss.cpu().detach().numpy()  )
         loss.backward()
 
 np.savetxt("vaeloss.csv",np.asarray(VAEloss),delimiter=",")
@@ -105,7 +105,7 @@ for epoch in range(EPOCHS):
         except KeyError:
             continue
         loss = dalle(textToken.cuda(), img, mask=mask.cuda(), return_loss=True)
-        DALLEloss.append(loss.cpu().numpy())
+        DALLEloss.append(loss.detach().cpu().numpy())
         loss.backward()
 
 np.savetxt("dalleloss.csv",np.asarray(DALLEloss),delimiter=",")
