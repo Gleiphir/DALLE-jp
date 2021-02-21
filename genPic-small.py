@@ -84,7 +84,7 @@ for i in range(30):
     images = dalle.generate_images(textToken, mask = mask)
     #print(images[0][0])
     Dimg  = transforms.ToPILImage()(images[0])
-    print(Dimg[:][:][0])
+    #print(Dimg[:][:][0])
     #print(images.size(),torch.min(Dimg),torch.max(Dimg),torch.mean(Dimg))
     #save_image( Dimg ,"./imgs/{}.png".format(i))
     Dimg.save("./imgs/{}.png".format(i))
