@@ -22,7 +22,7 @@ TRAIN_BATCHES = 100
 #Edit: And yup, you need to reserve 0 for padding and 1 for , so add 2 to your encoded text ids!
 
 
-EPOCHS = 100
+EPOCHS = 300
 
 
 
@@ -59,7 +59,7 @@ cap = dset.CocoCaptions(root = './coco/images',
 
 tokenDset = token_dataset('./coco/merged-smallsample.txt')
 
-
+VAEloss = []
 
 for epoch in range(EPOCHS):
     for i in range(100):
@@ -70,8 +70,10 @@ for epoch in range(EPOCHS):
         if i %10 == 0:
             print("VAE epoch {} / {}".format(i+ epoch*100,EPOCHS * 100))
         loss = vae(img,return_recon_loss = True)
+        VAEloss.append( loss.cpu().numpy()  )
         loss.backward()
 
+np.savetxt("vaeloss.csv",np.asarray(VAEloss),delimiter=",")
 
 torch.save(vae.state_dict(),"Vae-small.pth")
 
@@ -88,6 +90,8 @@ dalle = DALLE(
 ).cuda()
 
 
+DALLEloss = []
+
 for epoch in range(EPOCHS):
     for i in range(100):
         #print(i,":",tokenDset.getRand(i),img.size())
@@ -101,8 +105,10 @@ for epoch in range(EPOCHS):
         except KeyError:
             continue
         loss = dalle(textToken.cuda(), img, mask=mask.cuda(), return_loss=True)
+        DALLEloss.append(loss.cpu().numpy())
         loss.backward()
 
+np.savetxt("dalleloss.csv",np.asarray(DALLEloss),delimiter=",")
 
 
 

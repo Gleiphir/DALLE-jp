@@ -87,8 +87,8 @@ for i in range(30):
     Dimg  = transforms.ToPILImage()(images[0])
 
     #print(images.size(),torch.min(Dimg),torch.max(Dimg),torch.mean(Dimg))
-    #save_image( Dimg ,"./imgs/{}.png".format(i))
-    Dimg.save("./imgs/{}.png".format(i))
+    save_image( Dimg ,"./imgs/{}.png".format(i))
+    #Dimg.save("./imgs/{}.png".format(i))
 
 
 
