@@ -120,7 +120,7 @@ test_text = "犬が地面に寝そべっている写真"
 
 textToken, mask = fixlen( [tokenDset.tokenizeList(test_text) ])
 
-images = dalle.generate_images(textToken, mask = mask)
+images = dalle.generate_images(textToken.cuda(), mask = mask)
 print(images.shape) # (2, 3, 256, 256)
 
 
