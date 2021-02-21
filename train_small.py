@@ -22,7 +22,7 @@ TRAIN_BATCHES = 100
 #Edit: And yup, you need to reserve 0 for padding and 1 for , so add 2 to your encoded text ids!
 
 
-EPOCHS = 300
+EPOCHS = 1000
 
 
 
