@@ -8,6 +8,8 @@ from torch.utils.data.dataloader import DataLoader
 import random
 from PIL import Image
 
+
+
 IMAGE_SIZE = 256 # 256*256
 
 NUM_TOKENS = 65536 # Larger than actually
@@ -24,7 +26,7 @@ TRAIN_BATCHES = 100
 
 EPOCHS = 1000
 
-
+learning_rate = 0.0002
 
 vae = DiscreteVAE(
     image_size = IMAGE_SIZE,
@@ -38,6 +40,7 @@ vae = DiscreteVAE(
 ).cuda()
 
 
+optimizerVAE = torch.optim.Adam(vae.parameters(), lr=learning_rate)
 
 
 
@@ -64,6 +67,7 @@ VAEloss = []
 for epoch in range(EPOCHS):
     for i in range(100):
         #print(i,":",tokenDset.getRand(i),img.size())
+        optimizerVAE.zero_grad()
         img,_ = cap[i]
         img=img.unsqueeze(0).cuda()
         #print(img.size())
@@ -72,6 +76,7 @@ for epoch in range(EPOCHS):
         loss = vae(img,return_recon_loss = True)
         VAEloss.append( loss.cpu().detach().numpy()  )
         loss.backward()
+        optimizerVAE.step()
 
 np.savetxt("vaeloss.csv",np.asarray(VAEloss),delimiter=",")
 
@@ -89,12 +94,13 @@ dalle = DALLE(
     ff_dropout = 0.1            # feedforward dropout
 ).cuda()
 
-
+optimizerDALLE= torch.optim.Adam(dalle.parameters(), lr=learning_rate)
 DALLEloss = []
 
 for epoch in range(EPOCHS):
     for i in range(100):
         #print(i,":",tokenDset.getRand(i),img.size())
+        optimizerDALLE.zero_grad()
         img,strs = cap[i]
         #print(img.size())
         img = img.unsqueeze(0).cuda()
@@ -107,6 +113,7 @@ for epoch in range(EPOCHS):
         loss = dalle(textToken.cuda(), img, mask=mask.cuda(), return_loss=True)
         DALLEloss.append(loss.detach().cpu().numpy())
         loss.backward()
+        optimizerDALLE.step()
 
 np.savetxt("dalleloss.csv",np.asarray(DALLEloss),delimiter=",")
 
