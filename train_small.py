@@ -24,7 +24,7 @@ TRAIN_BATCHES = 100
 #Edit: And yup, you need to reserve 0 for padding and 1 for , so add 2 to your encoded text ids!
 
 
-EPOCHS = 1000
+EPOCHS = 300
 
 learning_rate = 0.0002
 
