@@ -23,8 +23,9 @@ TRAIN_BATCHES = 100
 #https://github.com/lucidrains/DALLE-pytorch/issues/33
 #Edit: And yup, you need to reserve 0 for padding and 1 for , so add 2 to your encoded text ids!
 
+DATASET_SIZE = 1000
 
-EPOCHS = 200
+EPOCHS = 100
 
 learning_rate = 0.0002
 
@@ -60,19 +61,19 @@ cap = dset.CocoCaptions(root = './coco/images',
                         ]))
 
 
-tokenDset = token_dataset('./coco/merged-smallsample.txt')
+tokenDset = token_dataset('./coco/merged-1000.txt')
 
 VAEloss = []
 
 for epoch in range(EPOCHS):
-    for i in range(100):
+    for i in range(DATASET_SIZE):
         #print(i,":",tokenDset.getRand(i),img.size())
         optimizerVAE.zero_grad()
         img,_ = cap[i]
         img=img.unsqueeze(0).cuda()
         #print(img.size())
         if i %10 == 0:
-            print("VAE epoch {} / {}".format(i+ epoch*100,EPOCHS * 100))
+            print("VAE epoch {} / {}".format(i+ epoch* DATASET_SIZE,EPOCHS * DATASET_SIZE))
         loss = vae(img,return_recon_loss = True)
         VAEloss.append( loss.cpu().detach().numpy()  )
         loss.backward()
@@ -98,14 +99,14 @@ optimizerDALLE= torch.optim.Adam(dalle.parameters(), lr=learning_rate)
 DALLEloss = []
 
 for epoch in range(EPOCHS):
-    for i in range(100):
+    for i in range(DATASET_SIZE):
         #print(i,":",tokenDset.getRand(i),img.size())
         optimizerDALLE.zero_grad()
         img,strs = cap[i]
         #print(img.size())
         img = img.unsqueeze(0).cuda()
         if i % 10 == 0:
-            print("DALLE epoch {} / {}".format(i+epoch*100, EPOCHS * 100))
+            print("DALLE epoch {} / {}".format(i+epoch*DATASET_SIZE, EPOCHS * DATASET_SIZE))
         try:
             textToken, mask = fixlen([tokenDset.getRand(i)])
         except KeyError:
