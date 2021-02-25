@@ -7,7 +7,9 @@ import numpy as np
 from torch.utils.data.dataloader import DataLoader
 import random
 from PIL import Image
+import argparse
 
+argP = argparse.ArgumentParser()
 
 
 IMAGE_SIZE = 256 # 256*256
@@ -41,7 +43,9 @@ vae = DiscreteVAE(
 ).cuda()
 
 
-vae.load_state_dict(torch.load("Vae-small.pth"))
+optimizerVAE = torch.optim.Adam(vae.parameters(), lr=learning_rate)
+
+
 
 """
 text = torch.randint(0, NUM_TOKENS, (BATCH_SIZE, TEXTSEQLEN))
@@ -63,8 +67,23 @@ tokenDset = token_dataset('./coco/merged-1000.txt')
 
 VAEloss = []
 
+for epoch in range(EPOCHS):
+    for i in range(DATASET_SIZE):
+        #print(i,":",tokenDset.getRand(i),img.size())
+        optimizerVAE.zero_grad()
+        img,_ = cap[i]
+        img=img.unsqueeze(0).cuda()
+        #print(img.size())
+        if i %10 == 0:
+            print("VAE epoch {} / {}".format(i+ epoch* DATASET_SIZE,EPOCHS * DATASET_SIZE))
+        loss = vae(img,return_recon_loss = True)
+        VAEloss.append( loss.cpu().detach().numpy()  )
+        loss.backward()
+        optimizerVAE.step()
 
+np.savetxt("vaeloss.csv",np.asarray(VAEloss),delimiter=",")
 
+torch.save(vae.state_dict(),"Vae-small.pth")
 
 dalle = DALLE(
     dim = 1024,
