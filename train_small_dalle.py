@@ -25,7 +25,7 @@ TRAIN_BATCHES = 100
 
 DATASET_SIZE = 1000
 
-EPOCHS = 20
+EPOCHS = 10
 
 learning_rate = 0.0002
 
