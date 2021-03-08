@@ -55,8 +55,9 @@ mask = torch.ones_like(text).bool()
 cap = dset.CocoCaptions(root = './coco/images',
                         annFile = './coco/annotations/captions_val2014.json',
                         transform=transforms.Compose([
-                            transforms.RandomCrop((IMAGE_SIZE,IMAGE_SIZE),pad_if_needed=True),
-                            #transforms.Resize((IMAGE_SIZE,IMAGE_SIZE),Image.NEAREST),
+                            #transforms.RandomCrop((IMAGE_SIZE,IMAGE_SIZE),pad_if_needed=True),
+                            transforms.Grayscale(),
+                            transforms.Resize((IMAGE_SIZE,IMAGE_SIZE),Image.BILINEAR),
                             transforms.ToTensor(),
                             transforms.Normalize( (0.5,0.5,0.5), (0.5,0.5,0.5))
                         ]))
